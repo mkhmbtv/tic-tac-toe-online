@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Home from './components/Home';
+import Game from './components/Game';
 
-function App() {
+const App = () => {
   return (
-    <h1>Hello world!</h1>
+    <div>
+      <h1>Tic-Tac-Toe Online</h1>
+      <Home />
+      <Game />
+    </div>
+    
   );
 }
 
