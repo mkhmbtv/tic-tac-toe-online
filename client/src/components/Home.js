@@ -1,8 +1,53 @@
 import React, { useState } from 'react';
 
-const Home = () => {
+const ValidationErrors = ({ errors }) => {
+  if (errors === null || errors.length === 0) {
+    return null;
+  }
+
   return (
-    <h2>Home</h2>
+    <div>
+      <p>Please correctthe following errors:</p>
+      <ul>
+        {errors.map((error) => (
+          <li key={error}>{error}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const Home = ({ updatePlayerName }) => {
+  const [playerName, setPlayerName] = useState('');
+  const [errors, setErrors] = useState([]);
+  
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const errorsToSet = [];
+
+    if (!playerName) errorsToSet.push('Please provide a player name.');
+    if (errorsToSet.length > 0) {
+      setErrors(errorsToSet);
+      return;
+    }
+    
+    updatePlayerName(playerName);
+  };
+
+  return (
+    <div>
+      <h2>Welcome!</h2>
+      <p>Please proide your player name and click the "Play Game" button to start a game.</p>
+      <ValidationErrors errors={errors} />
+      <form onSubmit={onSubmit}>
+        <input
+          type='text'
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+        />
+        <button>Play Game</button>
+      </form>
+    </div>
   );
 };
 
