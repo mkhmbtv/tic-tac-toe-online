@@ -4,6 +4,7 @@ import Game from './components/Game';
 
 const App = () => {
   const [playerName, setPlayerName] = useState('');
+  const [game, setGame] = useState(null);
 
   const webSocket = useRef(null);
 
@@ -24,7 +25,16 @@ const App = () => {
     };
 
     ws.onmessage = (e) => {
-      console.log(e);
+      console.log(`Processing incoming message ${e.data}...`);
+
+      const message = JSON.parse(e.data);
+      switch (message.type) {
+        case 'start-game':
+          setGame(message.data);
+          break;
+        default:
+          throw new Error(`Unknown message type: ${message.type}`);
+      }
     };
 
     ws.onerror = (e) => {
@@ -32,7 +42,10 @@ const App = () => {
     };
 
     ws.onclose = (e) => {
-      console.log(e);
+      console.log(`Connection closed: ${e}`);
+      webSocket.current = null;
+      setPlayerName('');
+      setGame(null);
     };
 
     webSocket.current = { ws };
@@ -52,7 +65,7 @@ const App = () => {
     <div>
       <h1>Tic-Tac-Toe Online</h1>
       {playerName ? (
-        <Game playerName={playerName} />
+        <Game playerName={playerName} game={game} />
       ) : (
         <Home updatePlayerName={updatePlayerName} />
       )}
