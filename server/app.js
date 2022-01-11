@@ -30,9 +30,38 @@ const processIncomingMessage = (jsonData, ws) => {
     case 'add-new-player':
       addNewPlayer(message.data.playerName, ws);
       break;
+    case 'select-game-square':
+      selectGameSquare(message.data.squareIndex, ws);
+      break;
     default:
       throw new Error(`Unknown message type: ${message.type}`);
   }
+};
+
+const endGame = () => {
+  const players = game.getPlayers();
+  const data = game.getData();
+  data.statusMessage = game.gameOverMessage();
+  broadcastMessage('end-game', data, players);
+};
+
+const updateGame = () => {
+  const players = game.getPlayers();
+  const data = game.getData();
+  data.statusMessage = `Select a square ${game.currentPlayer.playerName}!` ;
+  broadcastMessage('update-game', data, players);
+};
+
+const selectGameSquare = (squareIndex, ws) => {
+  const player = game.getPlayers().find((player) => player.ws === ws);
+  game.selectSquare(player, squareIndex);
+  if (game.checkGameStatus()) {
+    endGame();
+    game = null;
+  } else {
+    updateGame();
+  }
+
 };
 
 const addNewPlayer = (playerName, ws) => {

@@ -37,7 +37,7 @@ const Home = ({ updatePlayerName }) => {
   return (
     <div>
       <h2>Welcome!</h2>
-      <p>Please proide your player name and click the "Play Game" button to start a game.</p>
+      <p>Please provide your player name and click the "Play Game" button to start a game.</p>
       <ValidationErrors errors={errors} />
       <form onSubmit={onSubmit}>
         <input
